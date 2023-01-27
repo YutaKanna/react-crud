@@ -47,6 +47,25 @@ class App extends Component {
     this.fetchTasks()
   }
 
+  putTask(taskId) {
+    fetch("http://localhost:3001/tasks/"+taskId, {
+      method: "PUT",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ body: "テスト" })
+    })
+    .then( this.fetchTasks )
+  }
+
+  deleteTask(taskId) {
+    fetch("http://localhost:3001/tasks/"+taskId, {
+      method: "DELETE"
+    })
+    .then( this.fetchTasks )
+  }
+
   fetchTasks(){
     fetch("http://localhost:3001/tasks") // データを取得しに行く
     .then( response => response.json() ) // json型のレスポンスをオブジェクトに変換する
@@ -61,13 +80,19 @@ class App extends Component {
         <div className="tasks">
         {
           this.state.tasks.map( task => {
-              return <div className="task" key={ task.id }>{ task.body }</div>
+              return (
+                <div className="task" key={ task.id }>
+                  { task.body }
+                  <button className="put" onClick={ ()=>{ this.putTask(task.id) } }>put</button>
+                  <button className="delete" onClick={ ()=>{ this.deleteTask(task.id) } }>delete</button>
+                </div>
+              )
           })
         }
         </div>
         <div id="task-form">
-          <input type="text" id="task-input" onChange={ this.changeText }/>
-          <button id="submit" onClick={ this.submitTask }>submit</button>
+          <input type="text" onChange={ this.changeText }/>
+          <button onClick={ this.submitTask }>submit</button>
         </div>
       </div>
     );
