@@ -1,25 +1,48 @@
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor() {
+    super()
+    this.state = {
+      tasks: [
+        {
+          id: 1,
+          body: "aaa"
+        },
+        {
+          id: 2,
+          body: "bbb"
+        }
+      ]
+    }
+  }
+
+  componentWillMount(){
+    this.fetchTasks()
+  }
+
+  fetchTasks(){
+    fetch("http://localhost:3001/tasks") // データを取得しに行く
+    .then( response => response.json() ) // json型のレスポンスをオブジェクトに変換する
+    .then( json => { // オブジェクトに変換したレスポンスを受け取り、
+      this.setState({ tasks: json }) // Stateを更新する
+    })
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <div className="tasks">
+        {
+          this.state.tasks.map( task => {
+              return <div className="task" key={ task.id }>{ task.body }</div>
+          })
+        }
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
